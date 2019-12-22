@@ -1,0 +1,15 @@
+12.22 配置文件的使用
+    配置文件key值=github.client.id
+    controller中使用注解
+        @Value("${github.client.id}")
+    github的第三方登录
+    (1)先访问https://github.com/login/oauth/authorize?client_id+clientid+callback=返回服务器的地址;
+    (2)返回的中带了两个参数 code 和state;
+    (3)将这些数据弄到一个 AccessTokenDTO类中；
+    (4)通过code值来找到accessToken，从而返回一个用户的token；
+    (5)在通过这个token来获取user的信息
+
+    **Client Secret是比较重要的数据不要泄露
+
+
+session 和cookie 区别
