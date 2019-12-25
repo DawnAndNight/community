@@ -1,7 +1,7 @@
 <!DOCTYPE HTML>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>马建社区</title>
+    <title>发布-马建社区</title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     <link rel="stylesheet" href="css/bootstrap.min.css"/>
     <link rel="stylesheet" href="css/bootstrap-theme.min.css"/>
@@ -37,34 +37,51 @@
                         <li><a href="#">退出登录</a></li>
                     </ul>
                 </li>
-                <li th:if="${session.user} == null ">
+                <li th:if="${session.user} == null">
                     <a href="https://github.com/login/oauth/authorize?client_id=8c73ddaefc8e741d31f9&redirect_uri=http://localhost:8080/callback&scope=user&state=1">登录</a>
                 </li>
             </ul>
         </div>
     </div>
+
 </nav>
 <div class="container-fluid main">
     <div class="row">
         <div class="col-gl-9 col-md-9 col-xs-12 col-sm-12" >
-            <h2><span class="glyphicon glyphicon glyphicon-list" aria-hidden="true">发现</span></h2>
+            <h2><span class="glyphicon glyphicon glyphicon-plus" aria-hidden="true">发起</span></h2>
             <hr>
-            <div class="media">
-                <div class="media-left">
-                    <a href="#">
-                        <img class="media-object img-rounded img_class"
-                             src="https://avatars0.githubusercontent.com/u/33746806?v=4">
-                    </a>
+            <form action="/publish" method="post">
+                <div class="form-group">
+                    <label for="title">问题标题</label>
+                    <input type="text" class="form-control" id="title" name="title" placeholder="问题标题" th:value="${title}">
                 </div>
-                <div class="media-body">
-                    <h4 class="media-heading">快速入门springboot</h4>
-                    闲情看内容<br>
-                    <span class="text_dec">回复数·浏览数·1小事情时间</span>
+                <div class="form-group">
+                    <label for="description">问题补充</label>
+                    <textarea class="form-control" id="description" th:value="${description}" name="description" cols="30" rows="10"
+                              placeholder="问题内容"></textarea>
                 </div>
-            </div>
+                <div class="form-group">
+                    <label for="tag">添加标签</label>
+                    <input type="text" class="form-control" th:value="${tag}" id="tag" name="tag"
+                           placeholder="添加标签，以，分割">
+                </div>
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class=" alert alert-danger col-gl-9 col-md-9 col-xs-12 col-sm-12" th:text="${error}"
+                             th:if="${error}!=null">
+                        </div>
+                        <div class="col-gl-3 col-md-3 col-xs-12 col-sm-12">
+                            <button type="submit" class="btn btn-success btn-publish">发布</button>
+                        </div>
+                    </div>
+                </div>
+            </form>
         </div>
         <div class="col-gl-3 col-md-3 col-xs-12 col-sm-12">
-            <h3>热门话题</h3>
+            <h3>问题发布指南</h3>
+            ·o.s.b.w.embedded.tomcat.TomcatWebServer<br>
+            ·com.ff.community.CommunityApplication<br>
+            ·o.a.c.c.C.[Tomcat].[localhost].[/]<br>
         </div>
     </div>
 </div>

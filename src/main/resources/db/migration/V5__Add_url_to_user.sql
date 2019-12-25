@@ -1,0 +1,1 @@
+alter table USER add avert_url varchar(100) ;
