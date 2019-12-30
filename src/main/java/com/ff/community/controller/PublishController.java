@@ -1,6 +1,5 @@
 package com.ff.community.controller;
 
-import com.ff.community.mapper.PublishMapper;
 import com.ff.community.mapper.QuestionMapper;
 import com.ff.community.mapper.UserMapper;
 import com.ff.community.model.Question;
@@ -11,6 +10,7 @@ import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
@@ -26,6 +26,10 @@ public class PublishController {
     @Autowired
     private QuestionMapper publishMapper;
 
+    @GetMapping("/publish/{id}")
+    public String publish(@PathVariable(name = "id") Integer id){
+        return "publish";
+    }
     @GetMapping("/publish")
     public String publish(){
         return "publish";
@@ -58,21 +62,7 @@ public class PublishController {
             return "publish";
         }
 
-
-        User user = null;
-        Cookie[] cookies = request.getCookies();
-        for (Cookie cookie : cookies) {
-            if(cookie != null && cookies.length!=0) {
-                if (cookie.getName().equals("token")) {
-                    String token = cookie.getValue();
-                    user = userMapper.findBytoken(token);
-                    if (user != null) {
-                        request.getSession().setAttribute("user", user);
-                    }
-                    break;
-                }
-            }
-        }
+        User user = (User) request.getSession().getAttribute("user");
         if (user == null) {
             model.addAttribute("error", "用户未登录");
             return "publish";

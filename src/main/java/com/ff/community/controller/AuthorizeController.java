@@ -1,5 +1,7 @@
 package com.ff.community.controller;
 
+
+import com.ff.community.Service.UserService;
 import com.ff.community.dto.AccessTokenDTO;
 import com.ff.community.dto.GithubUser;
 import com.ff.community.mapper.UserMapper;
@@ -23,6 +25,8 @@ public class AuthorizeController {
 
     @Autowired
     private GitHubProvider gitHubProvider;
+    @Autowired
+    private UserService userService;
     @Autowired
     private UserMapper userMapper;
     @Value("${github.client.id}")
@@ -57,11 +61,24 @@ public class AuthorizeController {
             user.setAccountId(String.valueOf(githubuser.getId()));
             user.setGmtCreate(System.currentTimeMillis());
             user.setGmtModified(user.getGmtCreate());
-            user.setAvertUrl(githubuser.getAvatar_url());
-            userMapper.insert(user);
+            user.setAvertUrl(githubuser.getAvatarUrl());
+            userService.createOrUpdate(user);
+
             response.addCookie(new Cookie("token",token));
             return "redirect:/";
         }else
             return "redirect:/";
     }
+
+
+    @GetMapping("/logout")
+    public String logout(HttpServletRequest request,
+                         HttpServletResponse response){
+        request.getSession().removeAttribute("user");
+        Cookie cookie = new Cookie("token",null);
+        response.addCookie(cookie);
+        return "redirect:/";
+    }
+
+
 }

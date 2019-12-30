@@ -1,11 +1,13 @@
 package com.ff.community.controller;
 
 import com.ff.community.Service.QuestionService;
+import com.ff.community.dto.PageDTO;
 import com.ff.community.dto.QuestionDTO;
 import com.ff.community.mapper.QuestionMapper;
 import com.ff.community.mapper.UserMapper;
 import com.ff.community.model.Question;
 import com.ff.community.model.User;
+import org.h2.store.Page;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -27,23 +29,11 @@ public class HelloController {
 
     @GetMapping("/")
     public String index(HttpServletRequest request
-        ,Model model){
-        Cookie[] cookies = request.getCookies();
-        for (Cookie cookie : cookies) {
-            if(cookie != null && cookies.length!=0) {
-                if (cookie.getName().equals("token")) {
-                    String token = cookie.getValue();
-                    User user = userMapper.findBytoken(token);
-                    if (user != null) {
-                        request.getSession().setAttribute("user", user);
-                    }
-                    break;
-                }
-            }
-        }
+        ,Model model,@RequestParam(name = "page",defaultValue = "1")Integer page,
+                        @RequestParam(name = "size",defaultValue = "2")Integer size){
 
-        List<QuestionDTO> questionList = questionService.list();
-        model.addAttribute("questionList",questionList);
+        PageDTO questionList = questionService.list(page,size);
+        model.addAttribute("pageDTO",questionList);
         return "index";
     }
 }
