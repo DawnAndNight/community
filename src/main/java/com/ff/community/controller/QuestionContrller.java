@@ -15,7 +15,7 @@ public class QuestionContrller {
     private QuestionService questionService;
 
     @GetMapping("/question/{id}")
-    public String question(@PathVariable(name="id") String id
+    public String question(@PathVariable(name="id") Integer id
             ,Model model) {
 
         QuestionDTO questionDTO = questionService.getById(id);

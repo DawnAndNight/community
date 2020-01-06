@@ -1,0 +1,26 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>马建社区</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <link rel="stylesheet" href="/css/bootstrap.min.css"/>
+    <link rel="stylesheet" href="/css/bootstrap-theme.min.css"/>
+    <link rel="stylesheet" href="/css/community.css"/>
+    <script src="/js/jquery-3.4.1.js"></script>
+    <script src="/js/bootstrap.js"></script>
+</head>
+<body>
+<div th:insert="navigation::nav"></div>
+<div class="container-fluid main">
+    <div class="row">
+        <div class="col-gl-12 col-md-12 col-xs-12 col-sm-12" >
+            <div class="jumbotron">
+                <h1>出错了</h1>
+                <p th:text="${message}">服务器错误，耐心等待</p>
+                <p><a class="btn btn-primary btn-lg" href="/" role="button">回到首页</a></p>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

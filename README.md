@@ -14,3 +14,4 @@ CREATE CACHED TABLE "PUBLIC"."USER"(
 
 
 ```
+mvn -Dmybatis.generator.overwrite=true mybatis-generator:generate

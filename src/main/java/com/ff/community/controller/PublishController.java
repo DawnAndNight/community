@@ -1,12 +1,12 @@
 package com.ff.community.controller;
 
+import com.ff.community.Service.QuestionService;
+import com.ff.community.dto.QuestionDTO;
 import com.ff.community.mapper.QuestionMapper;
 import com.ff.community.mapper.UserMapper;
 import com.ff.community.model.Question;
 import com.ff.community.model.User;
-import org.apache.ibatis.annotations.Param;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 
 @Controller
@@ -23,11 +22,18 @@ public class PublishController {
     @Autowired
     private UserMapper userMapper;
 
+
     @Autowired
-    private QuestionMapper publishMapper;
+    private QuestionService questionService;
 
     @GetMapping("/publish/{id}")
-    public String publish(@PathVariable(name = "id") Integer id){
+    public String publish(@PathVariable(name = "id") Integer id
+                          ,Model model){
+        QuestionDTO question = questionService.getById(id);
+        model.addAttribute("title",question.getTitle());
+        model.addAttribute("description",question.getDescriptions());
+        model.addAttribute("tag",question.getTag());
+        model.addAttribute("id",question.getId());
         return "publish";
     }
     @GetMapping("/publish")
@@ -40,6 +46,7 @@ public class PublishController {
          @RequestParam("title") String title,
          @RequestParam("description") String description,
          @RequestParam("tag") String tag,
+        @RequestParam(name = "id",required = false) Integer id,
         HttpServletRequest request,
         Model model) {
 
@@ -71,10 +78,11 @@ public class PublishController {
         question.setTitle(title);
         question.setDescriptions(description);
         question.setTag(tag);
+        question.setId(id);
         question.setGmtCreate(System.currentTimeMillis());
         question.setGmtModified(question.getGmtCreate());
         question.setCreator(user.getId());
-        publishMapper.create(question);
+        questionService.updateOrCreate(question);
         return "redirect:/";
     }
 }
