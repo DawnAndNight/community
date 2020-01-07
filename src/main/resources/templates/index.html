@@ -31,9 +31,9 @@
                     </h4>
                     <span th:text="${question.descriptions}"></span>   <br>
                     <span class="text_dec"><span th:text="${question.commentCount}"></span>个回复
-                        ·<span th:text="${question.viewCount}"></span>浏览数·<span
-                                th:text="${#dates.format(question.gmtCreate,'dd MMMM yyyy') }">
-                    </span>时间
+                        ·<span th:text="${question.viewCount}"></span>浏览数·时间:<span
+                                th:text="${#dates.format(question.gmtCreate,'MMMM yyyy dd') }">
+                    </span>
                     </span>
                 </div>
             </div>

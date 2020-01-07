@@ -1,6 +1,6 @@
 package com.ff.community.Service;
 
-import com.ff.community.exception.CustomizeExcepCode;
+import com.ff.community.exception.CustomizeErrorCode;
 import com.ff.community.exception.CustomizeException;
 import com.ff.community.mapper.UserMapper;
 import com.ff.community.model.User;
@@ -33,7 +33,7 @@ public class UserService {
             example.createCriteria().andIdEqualTo(dbUsers.get(0).getId());
             int updateInt = userMapper.updateByExampleSelective(dbUser,example );
             if (updateInt != 1){
-                throw new CustomizeException(CustomizeExcepCode.QUESTION_NOT_FOUND);
+                throw new CustomizeException(CustomizeErrorCode.QUESTION_NOT_FOUND);
             }
 
         }
