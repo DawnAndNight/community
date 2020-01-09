@@ -33,7 +33,7 @@ public class CommentService {
             //回复评论
             Comment dbcomment = commentMapper.selectByPrimaryKey(comment.getParentId());
             if(dbcomment == null){
-                throw new CustomizeException(CustomizeErrorCode.COMMET_NOT_FOUND);
+                throw new CustomizeException(CustomizeErrorCode.COMMENT_NOT_FOUND);
             }
             commentMapper.insert(comment);
         }else{

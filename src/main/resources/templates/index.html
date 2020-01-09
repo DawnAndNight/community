@@ -9,6 +9,17 @@
     <script src="js/jquery-3.4.1.js"></script>
     <script src="js/bootstrap.js"></script>
 </head>
+<script type="application/javascript">
+    window.onload= function () {
+        debugger;
+        var check  =  window.localStorage.getItem("closetab");
+        console.log(check);
+        if (check == "true"){
+            window.close();
+            window.localStorage.removeItem("closetab");
+        }
+    }
+</script>
 <body>
 <div th:insert="navigation::nav"></div>
 <div class="container-fluid main">

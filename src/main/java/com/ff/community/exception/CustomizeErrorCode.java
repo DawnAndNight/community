@@ -6,7 +6,8 @@ public enum CustomizeErrorCode implements ICustomizeExcepCode{
     NOT_LOGIN_IN(2003,"为进行登录"),
     SYS_ERROR(2004,"服务器炸了"),
     TYPE_PARENT_WRONG(2005,"没有找到相应标签"),
-    COMMET_NOT_FOUND(2006,"评论未找到");
+    COMMENT_NOT_FOUND(2006,"评论未找到"),
+    CONTENT_IS_EMPTY(2007,"输入内容不能为空");
 
     private String message;
     private Integer code;

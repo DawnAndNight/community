@@ -1,15 +1,16 @@
 package com.ff.community.Service;
 
+import com.ff.community.dto.CommentDTO;
 import com.ff.community.dto.PageDTO;
 import com.ff.community.dto.QuestionDTO;
+import com.ff.community.enums.CommentTypeEnum;
 import com.ff.community.exception.CustomizeErrorCode;
 import com.ff.community.exception.CustomizeException;
+import com.ff.community.mapper.CommentMapper;
 import com.ff.community.mapper.QuestionExtMapper;
 import com.ff.community.mapper.QuestionMapper;
 import com.ff.community.mapper.UserMapper;
-import com.ff.community.model.Question;
-import com.ff.community.model.QuestionExample;
-import com.ff.community.model.User;
+import com.ff.community.model.*;
 import org.apache.ibatis.session.RowBounds;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +18,9 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 //请求需要组装user的同时需要question的时候，就需要service
 @Service
@@ -26,6 +30,9 @@ public class QuestionService {
 
     @Autowired
     private QuestionExtMapper questionExtMapper;
+
+    @Autowired
+    private CommentMapper commentMapper;
 
     @Autowired
     private UserMapper userMapper;
@@ -150,5 +157,37 @@ public class QuestionService {
         question.setId(id);
         question.setViewCount(1);
         questionExtMapper.incView(question);
+    }
+
+    public List<CommentDTO> ListByQuestionId(Long id) {
+        CommentExample commentExample = new CommentExample();
+        commentExample.createCriteria().andParentIdEqualTo(id)
+        .andTypeEqualTo(CommentTypeEnum.QUESTION.getType());
+        commentExample.setOrderByClause("gmt_create");
+        List<Comment> comments = commentMapper.selectByExample(commentExample);
+        if(comments.size() == 0){
+            return new ArrayList<>();
+        }
+        Set<Long> commentator = comments.stream().map(
+                comment -> comment.getCommentor()
+        ).collect(Collectors.toSet());
+
+        List<Long> userId = new ArrayList<>();
+        userId.addAll(commentator);
+
+        UserExample userExample = new UserExample();
+        userExample.createCriteria().andIdIn(userId);
+
+        List<User> users = userMapper.selectByExample(userExample);
+
+        Map<Long,User> userMap = users.stream().collect(Collectors.toMap(user->user.getId(),user->user));
+
+        List<CommentDTO> commentDTOS = comments.stream().map(comment -> {
+            CommentDTO commentDTO = new CommentDTO();
+            BeanUtils.copyProperties(comment,commentDTO);
+            commentDTO.setUser(userMap.get(commentDTO.getCommentor()));
+            return commentDTO;
+        }).collect(Collectors.toList());
+        return commentDTOS;
     }
 }
