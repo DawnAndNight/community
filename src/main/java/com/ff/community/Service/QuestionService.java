@@ -11,15 +11,13 @@ import com.ff.community.mapper.QuestionExtMapper;
 import com.ff.community.mapper.QuestionMapper;
 import com.ff.community.mapper.UserMapper;
 import com.ff.community.model.*;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.ibatis.session.RowBounds;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 //请求需要组装user的同时需要question的时候，就需要service
@@ -54,6 +52,7 @@ public class QuestionService {
 
         Integer offset = size*(page-1);
         QuestionExample questionExample = new QuestionExample();
+        questionExample.setOrderByClause("gmt_Create desc");
         List<Question> questions = questionMapper.selectByExampleWithRowbounds(questionExample,new RowBounds(offset,size));
         List<QuestionDTO> questionDTOS = new ArrayList<>();
         PageDTO pageDTO = new PageDTO();
@@ -159,35 +158,24 @@ public class QuestionService {
         questionExtMapper.incView(question);
     }
 
-    public List<CommentDTO> ListByQuestionId(Long id) {
-        CommentExample commentExample = new CommentExample();
-        commentExample.createCriteria().andParentIdEqualTo(id)
-        .andTypeEqualTo(CommentTypeEnum.QUESTION.getType());
-        commentExample.setOrderByClause("gmt_create");
-        List<Comment> comments = commentMapper.selectByExample(commentExample);
-        if(comments.size() == 0){
+
+    public List<QuestionDTO> selectRelate(QuestionDTO dto) {
+        if(dto == null){
             return new ArrayList<>();
         }
-        Set<Long> commentator = comments.stream().map(
-                comment -> comment.getCommentor()
-        ).collect(Collectors.toSet());
+        String[] tags = StringUtils.split(dto.getTag(),",");
+        String repex = Arrays.stream(tags).collect(Collectors.joining("|"));
+        Question question = new Question();
+        question.setTag(repex);
+        question.setId(dto.getId());
+        List<Question> questionList = questionExtMapper.selectRelated(question);
+        List<QuestionDTO> questionDTOS = questionList.stream().
+                map(q->{
+                    QuestionDTO questionDTO = new QuestionDTO();
+                    BeanUtils.copyProperties(q,questionDTO);
+                    return questionDTO;
+                }).collect(Collectors.toList());
+        return questionDTOS;
 
-        List<Long> userId = new ArrayList<>();
-        userId.addAll(commentator);
-
-        UserExample userExample = new UserExample();
-        userExample.createCriteria().andIdIn(userId);
-
-        List<User> users = userMapper.selectByExample(userExample);
-
-        Map<Long,User> userMap = users.stream().collect(Collectors.toMap(user->user.getId(),user->user));
-
-        List<CommentDTO> commentDTOS = comments.stream().map(comment -> {
-            CommentDTO commentDTO = new CommentDTO();
-            BeanUtils.copyProperties(comment,commentDTO);
-            commentDTO.setUser(userMap.get(commentDTO.getCommentor()));
-            return commentDTO;
-        }).collect(Collectors.toList());
-        return commentDTOS;
     }
 }

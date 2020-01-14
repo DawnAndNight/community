@@ -2,19 +2,19 @@ package com.ff.community.controller;
 
 import com.ff.community.Service.CommentService;
 import com.ff.community.dto.CommentCreateDTO;
+import com.ff.community.dto.CommentDTO;
 import com.ff.community.dto.ResultDTO;
+import com.ff.community.enums.CommentTypeEnum;
 import com.ff.community.exception.CustomizeErrorCode;
 import com.ff.community.model.Comment;
 import com.ff.community.model.User;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.List;
 
 @Controller
 public class CommentController {
@@ -47,4 +47,11 @@ public class CommentController {
         return ResultDTO.okof();
 
     }
+    @ResponseBody
+    @RequestMapping(value = "/comment/{id}",method = RequestMethod.GET)
+    public ResultDTO<List> comments(@PathVariable(name = "id")Long id){
+        List<CommentDTO> commentDTOS = commentService.ListByTargetById(id, CommentTypeEnum.COMMENT);
+        return ResultDTO.okof(commentDTOS);
+    }
+
 }

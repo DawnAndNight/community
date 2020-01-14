@@ -75,3 +75,31 @@ body{
 .menu .icon:hover{
     color: #499ef3;
 }
+.menu .active{
+    color: #499ef3;
+}
+.comment_sub{
+    border-radius: 5px;
+    margin-top: 10px;
+    border: 1px solid #333;
+    padding: 15px 15px;
+}
+.comment_sub .media{
+    padding-top: 5px;
+}
+.comment_sub hr{
+    margin-top: 0;
+}
+.question-tag{
+    margin-right: 10px;
+}
+.question-relate{
+    line-height: 20px;
+    font-size: 12px;
+    margin-left: 0;
+    list-style: none;
+    padding-left: 0;
+}
+.image_tu{
+    width: 100%;
+}
